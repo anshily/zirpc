@@ -1,9 +1,8 @@
-package io.zixingly.register;
+package io.zixingly.rpcregister;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.zixingly.assis.RegisterMsg;
 import io.zixingly.assis.ServeMsg;
 
@@ -48,9 +47,7 @@ public class RegisterHandler extends ChannelDuplexHandler {
         }
 
         if (msg instanceof ServeMsg){
-//            if (!map.isEmpty()){
-//            }
-//            System.out.println("服务提供者个数："+list.size());
+
             System.out.println("服务提供者个数：" + providerMap.size());
             if (!providerMap.isEmpty()){
                 int seed = (int)(Math.random()*providerMap.size());

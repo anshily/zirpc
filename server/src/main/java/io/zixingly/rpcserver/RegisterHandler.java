@@ -15,49 +15,47 @@ import io.zixingly.assis.RegisterMsg;
 
 import static io.zixingly.assis.Constant.PORT;
 
-public class RegisterHandler extends ChannelInboundHandlerAdapter {
-
+public class RegisterHandler extends ChannelDuplexHandler {
 
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         System.out.println("register! 发送注册信息。。。");
 
-
-        new Thread(){
-            @Override
-            public void run() {
-                EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-                EventLoopGroup workerGroup = new NioEventLoopGroup();
-                try {
-                    ServerBootstrap b = new ServerBootstrap();
-                    b.group(bossGroup, workerGroup)
-                            .channel(NioServerSocketChannel.class)
-                            .handler(new LoggingHandler(LogLevel.INFO))
-                            .childHandler(new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                public void initChannel(SocketChannel ch) throws Exception {
-                                    ChannelPipeline p = ch.pipeline();
-                                    p.addLast(
-                                            new ObjectEncoder(),
-                                            new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                            new RpcServerHandler());
-//                            p.addLast(new ObjectEchoServerHandler());
-                                }
-                            });
-
-                    // Bind and start to accept incoming connections.
-                    try {
-                        b.bind(PORT).sync().channel().closeFuture().sync();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } finally {
-                    bossGroup.shutdownGracefully();
-                    workerGroup.shutdownGracefully();
-                }
-            }
-        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+//                EventLoopGroup workerGroup = new NioEventLoopGroup();
+//                try {
+//                    ServerBootstrap b = new ServerBootstrap();
+//                    b.group(bossGroup, workerGroup)
+//                            .channel(NioServerSocketChannel.class)
+//                            .handler(new LoggingHandler(LogLevel.INFO))
+//                            .childHandler(new ChannelInitializer<SocketChannel>() {
+//                                @Override
+//                                public void initChannel(SocketChannel ch) throws Exception {
+//                                    ChannelPipeline p = ch.pipeline();
+//                                    p.addLast(
+//                                            new ObjectEncoder(),
+//                                            new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+//                                            new TestIOproviderHandler());
+////                            p.addLast(new ObjectEchoServerHandler());
+//                                }
+//                            });
+//
+//                    // Bind and start to accept incoming connections.
+//                    try {
+//                        b.bind(PORT).sync().channel().closeFuture().sync();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                } finally {
+//                    bossGroup.shutdownGracefully();
+//                    workerGroup.shutdownGracefully();
+//                }
+//            }
+//        }.start();
         ctx.fireChannelRegistered();
     }
 

@@ -1,7 +1,10 @@
-package io.zixingly.register;
+package io.zixingly.rpcregister;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -11,16 +14,13 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import static io.zixingly.assis.Constant.PORT;
-
+import static io.zixingly.assis.Constant.DISCOVER_PORT;
 
 public class Register {
 
     public static RegisterHandler registerHandler;
 
-    public static Channel channel;
-
-    public static void main(String[] args) throws Exception {
+    public void run(){
 
         registerHandler = new RegisterHandler();
 
@@ -44,12 +44,14 @@ public class Register {
                     });
 
             // Bind and start to accept incoming connections.
-            ChannelFuture future = b.bind(PORT).sync().channel().closeFuture().sync();
+            ChannelFuture future = b.bind(DISCOVER_PORT).sync().channel().closeFuture().sync();
 
-            channel = future.channel();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+
     }
 }

@@ -1,10 +1,12 @@
 package io.zixingly.rpcserver;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 
-public class RpcServerHandler extends ChannelInboundHandlerAdapter {
+public class RpcServerHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){

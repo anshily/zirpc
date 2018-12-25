@@ -1,4 +1,4 @@
-package io.zixingly.register;
+package io.zixingly.rpcserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -11,21 +11,21 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import java.util.Map;
+
 import static io.zixingly.assis.Constant.PORT;
 
+public class IOProvider {
 
-public class Register {
+    private Map<String, Channel> channels;
 
-    public static RegisterHandler registerHandler;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
 
-    public static Channel channel;
+    public IOProvider() {
+        bossGroup = new NioEventLoopGroup(1);
+        workerGroup = new NioEventLoopGroup();
 
-    public static void main(String[] args) throws Exception {
-
-        registerHandler = new RegisterHandler();
-
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -35,18 +35,21 @@ public class Register {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-
                             p.addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                    registerHandler);
+                                    new RpcServerHandler());
+//                            p.addLast(new ObjectEchoServerHandler());
                         }
                     });
 
             // Bind and start to accept incoming connections.
-            ChannelFuture future = b.bind(PORT).sync().channel().closeFuture().sync();
+            try {
+                b.bind(PORT).sync().channel().closeFuture().sync();
 
-            channel = future.channel();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

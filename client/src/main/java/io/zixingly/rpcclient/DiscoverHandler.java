@@ -11,7 +11,9 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import io.zixingly.assis.ServeMsg;
 
-public class DiscoverHandler extends ChannelInboundHandlerAdapter {
+public class DiscoverHandler extends ChannelDuplexHandler {
+
+    final AccessHandler accessHandler = new AccessHandler();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
@@ -23,6 +25,10 @@ public class DiscoverHandler extends ChannelInboundHandlerAdapter {
             System.out.println("收到注册信息！");
 
             System.out.println(((ServeMsg) msg).getMsg());
+
+            if ("暂无服务".equals(((ServeMsg) msg).getMsg())){
+                System.out.println("暂无服务");
+            }
 
             final int Port = ((ServeMsg) msg).getRemotePort();
             final String Host = ((ServeMsg) msg).getRemoteHost();
@@ -44,7 +50,7 @@ public class DiscoverHandler extends ChannelInboundHandlerAdapter {
                                         p.addLast(
                                                 new ObjectEncoder(),
                                                 new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                                new AccessHandler());
+                                                accessHandler);
                                     }
                                 });
 
@@ -59,6 +65,10 @@ public class DiscoverHandler extends ChannelInboundHandlerAdapter {
             }.start();
         }
 
+    }
+
+    public AccessHandler getHandler(){
+        return accessHandler;
     }
 
     @Override

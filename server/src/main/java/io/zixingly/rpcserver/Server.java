@@ -1,10 +1,7 @@
 package io.zixingly.rpcserver;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -16,8 +13,16 @@ import io.zixingly.assis.Constant;
 public class Server {
     public static void main(String[] args) throws Exception {
 
-        System.out.println("服务器启动");
+        new Thread(){
+            @Override
+            public void run() {
 
+                IOProvider ioProvider = new IOProvider();
+//                super.run();
+            }
+        }.start();
+
+        System.out.println("服务器启动");
 
         EventLoopGroup cGroup = new NioEventLoopGroup();
 
@@ -42,6 +47,7 @@ public class Server {
         // Wait until the connection is closed.
         f.channel().closeFuture().sync();
 
+        f.syncUninterruptibly();
 
     }
 }
