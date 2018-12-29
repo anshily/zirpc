@@ -25,7 +25,7 @@ public class IOProvider {
 
     private boolean isClosed = false;
 
-    public void start() {
+    public void start(int port) {
         if(init) {
             throw new RuntimeException("client is already started");
         }
@@ -47,7 +47,7 @@ public class IOProvider {
                         }
                     });
             //keep the connection with server，and blocking until closed!
-            future = bootstrap.connect(new InetSocketAddress("127.0.0.1", 18080)).sync();
+            future = bootstrap.connect(new InetSocketAddress("127.0.0.1", port)).sync();
             init = true;
         } catch (Exception e) {
             isClosed = true;
@@ -76,7 +76,7 @@ public class IOProvider {
      * @return
      * @throws Exception
      */
-    public String send(BusinessMsg message) throws Exception {
+    public BusinessMsg send(BusinessMsg message) throws Exception {
         if(isClosed || !init) {
             throw new RuntimeException("client has been closed!");
         }
