@@ -79,7 +79,7 @@ public class Server {
                                     ChannelPipeline p = ch.pipeline();
                                     p.addLast(
                                             new ObjectEncoder(),
-                                            new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                            new ObjectDecoder(ClassResolvers.cacheDisabled(null))
                                             );
 //                            p.addLast(new ObjectEchoServerHandler());
                                 }
@@ -98,6 +98,9 @@ public class Server {
 //            ServerBootstrap serverBootstrap = new ServerBootstrap();
 //            serverBootstrap.group(bossGroup,workGroup)
 
+        }finally {
+
+            }
         }
     }
 }
